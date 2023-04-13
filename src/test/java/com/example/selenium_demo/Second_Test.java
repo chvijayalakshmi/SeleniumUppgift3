@@ -37,16 +37,13 @@ public class Second_Test {
         Assertions.assertEquals(17,c);
     }
     @Test
-    void selectingProgram() throws InterruptedException {
+    void goToBarnProgram() throws InterruptedException {
         driver.findElement(By.xpath("//a[text()='Program']")).click();
         Thread.sleep(3000);
-        driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/section/article[16]/a/h2/span")).click();
-        Thread.sleep(2000);
-        driver.findElement(By.id("tab-1")).click();
-        Thread.sleep(2000);
-        driver.findElement(By.cssSelector("#panel-1 > section > div > article:nth-child(1) > div > a > div > div")).click();
+        driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/section/article[5]/a")).click();
 
-    }
+
+            }
    @Test
     void findTitle() throws InterruptedException {
         Thread.sleep(2000);
@@ -88,20 +85,10 @@ public class Second_Test {
        driver.findElement(By.xpath("//li[@type=\"channels\"]")).click();
        Thread.sleep(2000);
        driver.findElement(By.xpath("//a[@aria-label=\"Välj dag\"]")).click();
-       driver.findElement(By.xpath("//a[@aria-label=\"1 mars\"]")).click();
+       driver.findElement(By.xpath("//a[@aria-label=\"1 april\"]")).click();
+
     }
-   /* @Test
-    void verifyTeckenSpråkProgram() throws InterruptedException {
-       Thread.sleep(2000);
-       driver.get("https://www.svtplay.se/");
-       driver.findElement(By.xpath("//a[text()='Program']")).click();
-        Thread.sleep(2000);
-        driver.findElement(By.linkText("Teckenspråk")).click();
-        Thread.sleep(2000);
-       driver.findElement(By.xpath("//img[@alt=\"Alices snöflingor\"]")).click();
-       Thread.sleep(2000);
-       driver.findElement(By.xpath("//span[@aria-label=\"Spela senaste av Alices snöflingor\"]"));
-    }*/
+
     @Test
     void printTheProgramCaptionForVeryFirstProgram() throws InterruptedException {
        driver.findElement(By.xpath(" //a[@accesskey=\"1\"]"));
@@ -112,7 +99,7 @@ public class Second_Test {
 
     @Test
     void usingSearch() throws InterruptedException {
-       WebElement z = driver.findElement(By.id("search"));
+       WebElement z = driver.findElement(By.xpath("//input[@aria-label=\"Sök på SVT Play\"]"));
        z.sendKeys("Agenda");
        // driver.findElement(By.className("sc-8961da81-16")).click();
        Thread.sleep(3000);
@@ -123,7 +110,7 @@ public class Second_Test {
     }
     @Test
     void sendThePistvaktInSearchBarAndCountThePrograms() throws InterruptedException {
-       WebElement y = driver.findElement(By.id("search"));
+       WebElement y = driver.findElement(By.xpath("//input[@aria-label=\"Sök på SVT Play\"]"));
         String value = y.getAttribute("value");
         if(value!=null){
             int va = value.length();
@@ -132,7 +119,8 @@ public class Second_Test {
             }
         }
         y.sendKeys("Pistvakt");
-        driver.findElement(By.className("sc-8961da81-16")).click();
+        y.sendKeys(Keys.ENTER);
+       // driver.findElement(By.className("sc-8961da81-16")).click();
         Thread.sleep(2000);
         driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/section/div/ul/li/article/a")).click();
                 //driver.findElement(By.className("sc-8ddc32bb-9")).click();

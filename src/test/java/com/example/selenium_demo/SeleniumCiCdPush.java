@@ -1,5 +1,4 @@
 package com.example.selenium_demo;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -9,14 +8,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.List;
 
-public class Second_Test {
+public class SeleniumCiCdPush {
      private static WebDriver driver;
    @BeforeAll
    static void runBefore() throws InterruptedException {
        ChromeOptions co = new ChromeOptions();
        co.addArguments("--remote-allow-origins=*");
        co.addArguments("incognito");
-        driver = new ChromeDriver(co);
+       co.addArguments("headless");
+       driver = new ChromeDriver(co);
        driver.get("https://www.svtplay.se/");
        driver.manage().window().maximize();
        driver.findElement(By.cssSelector("#__next > div.sc-4f221cd2-1.fHHyBJ > div > div.sc-4f221cd2-8.bRFLbH > button.sc-5b00349a-2.fuGbXH.sc-4f221cd2-9.hEiUxP")).click();
@@ -42,7 +42,6 @@ public class Second_Test {
         Thread.sleep(3000);
         driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/section/article[5]/a")).click();
 
-
             }
    @Test
     void findTitle() throws InterruptedException {
@@ -56,7 +55,7 @@ public class Second_Test {
     @Test
     void findLogoIsVisible() {
         boolean display = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/a")).isDisplayed();
-        if (display == true) {
+        if (display) {
             System.out.println("*********************************  Svt Logo is displayed  *************************");
         }
     }

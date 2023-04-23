@@ -15,11 +15,11 @@ public class SeleniumCiCdPush {
        ChromeOptions co = new ChromeOptions();
        co.addArguments("--remote-allow-origins=*");
        co.addArguments("incognito");
-       co.addArguments("headless");
+       //co.addArguments("headless");
        driver = new ChromeDriver(co);
        driver.get("https://www.svtplay.se/");
        driver.manage().window().maximize();
-       driver.findElement(By.cssSelector("#__next > div.sc-4f221cd2-1.fHHyBJ > div > div.sc-4f221cd2-8.bRFLbH > button.sc-5b00349a-2.fuGbXH.sc-4f221cd2-9.hEiUxP")).click();
+       driver.findElement(By.cssSelector("#__next > div:nth-child(3) > div:nth-child(2) > div > div > div.sc-2ab3fa9b-8.eTLtMf > button.sc-5b00349a-2.fuGbXH.sc-2ab3fa9b-9.iXSCyd")).click();
        Thread.sleep(2000);
    }
    @BeforeEach
@@ -41,7 +41,6 @@ public class SeleniumCiCdPush {
         driver.findElement(By.xpath("//a[text()='Program']")).click();
         Thread.sleep(3000);
         driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/section/article[5]/a")).click();
-
             }
    @Test
     void findTitle() throws InterruptedException {

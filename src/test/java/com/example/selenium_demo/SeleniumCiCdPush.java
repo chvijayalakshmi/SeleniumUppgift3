@@ -158,8 +158,8 @@ public class SeleniumCiCdPush {
        String expectedURL = "https://www.svtplay.se/installningar";
        assertEquals(expectedURL,actualURL,"URL does not match");
     }
-  /* @AfterAll
+   @AfterAll
     static void Shutingdown(){
        driver.close();
-    }*/
+    }
 }

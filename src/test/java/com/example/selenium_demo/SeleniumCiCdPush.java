@@ -6,7 +6,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import java.util.Arrays;
 import java.util.List;
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SeleniumCiCdPush {
      private static WebDriver driver;
@@ -19,95 +22,88 @@ public class SeleniumCiCdPush {
        driver = new ChromeDriver(co);
        driver.get("https://www.svtplay.se/");
        driver.manage().window().maximize();
-       driver.findElement(By.cssSelector("#__next > div:nth-child(3) > div:nth-child(2) > div > div > div.sc-2ab3fa9b-8.eTLtMf > button.sc-5b00349a-2.fuGbXH.sc-2ab3fa9b-9.iXSCyd")).click();
-       Thread.sleep(2000);
+       driver.findElement(By.xpath("//button[contains(text(), 'Acceptera alla')]")).click();
+       sleep(2000);
    }
    @BeforeEach
     void refreshThePage(){
         driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/ul/li[1]/a")).click();
     }
     @Test
-    void checkTheProgramList() throws InterruptedException {
-        driver.findElement(By.xpath("//a[text()='Program']")).click();
-        Thread.sleep(3000);
-        List<WebElement> countOfAllPrograms = driver.findElements(By.className("hjlmUN"));
-        Thread.sleep(3000);
-        int c = countOfAllPrograms.size();
-        Thread.sleep(3000);
-        Assertions.assertEquals(17,c);
-    }
-    @Test
-    void goToBarnProgram() throws InterruptedException {
-        driver.findElement(By.xpath("//a[text()='Program']")).click();
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section[1]/section/article[5]/a")).click();
-            }
-   @Test
-    void findTitle() throws InterruptedException {
-        Thread.sleep(2000);
-       //driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/a/svg")).click();
+    void VerifyTheWebPageTitle() throws InterruptedException {
+        sleep(2000);
         String title = driver.getTitle();
-        System.out.println( "*******************************TITLE******************************   "+title);
-        Assertions.assertEquals("SVT Play", title);
-
+        assertEquals("SVT Play", title,"Title dose not match");
     }
     @Test
-    void findLogoIsVisible() {
-        boolean display = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/a")).isDisplayed();
-        if (display) {
-            System.out.println("*********************************  Svt Logo is displayed  *************************");
+    void verifyTheLogoIsVisible() {
+        WebElement logo = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/header/div[2]/div/div/nav/a"));
+        assertTrue(logo.isDisplayed());
+    }
+    @Test
+    void verifyMenuLinkNames()  {
+        List<String> menuName = Arrays.asList("start","program","kanaler");
+        List<WebElement> menuList = driver.findElements(By.cssSelector("[data-rt='play-navigation'] li[data-rt='menu-item']"));
+        int sequence = 0;
+        for(WebElement menu: menuList){
+            assertEquals(menu.getText().toLowerCase(),menuName.get(sequence), "Menu title dose not match");
+            sequence++;
         }
     }
-    @Test
-    void verifyMenu()  {
-       driver.findElement(By.linkText("START"));
-       driver.findElement(By.linkText("PROGRAM"));
-       driver.findElement(By.linkText("KANALER"));
-            }
-    //Kontrollera att länken för “Tillgänglighet i SVT Play” är synlig och att rätt länktext visas.
-    @Test
-    void checkTheLinkText() throws InterruptedException {
-       Thread.sleep(2000);
-       String L = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/footer/div/div[5]/div[2]/p[1]/a/span[2]")).getText();
-       Assertions.assertEquals("Tillgänglighet i SVT Play",L);
-   }
-
-    @Test
-    void goToBarnPrograms(){
-       String s = driver.findElement(By.linkText("Barn")).getText();
-       System.out.println("*********************   "+s+"  ********************************");
-       Assertions.assertEquals("Barn",s);
+    @Test//Kontrollera att länken för “Tillgänglighet i SVT Play” är synlig och att rätt länktext visas.
+    void VerifyTheTilgänglighetISVTPlayIsVisibleAndShowCorrectTheLinkText() throws InterruptedException {
+        sleep(2000);
+        WebElement X = driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/footer/div/div[5]/div[2]/p[1]/a/span[2]"));
+        assertTrue(X.isDisplayed());
+        String actualLinkText = X.getText();
+        String expectedLinkText = "Tillgänglighet i SVT Play";
+        assertEquals(expectedLinkText,actualLinkText,"Link text does not match");
     }
     @Test
-    void findProgramByDate() throws InterruptedException {
-       driver.findElement(By.xpath("//li[@type=\"channels\"]")).click();
-       Thread.sleep(2000);
-       driver.findElement(By.xpath("//a[@aria-label=\"Välj dag\"]")).click();
-       driver.findElement(By.xpath("//a[@aria-label=\"1 april\"]")).click();
-
+    void checkTheHeadingForTillgänglighetPage(){
+        driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/footer/div/div[5]/div[2]/p[1]/a/span[2]")).click();
+        WebElement a = driver.findElement(By.tagName("h1"));
+        String actualHeading = a.getText();
+        String expectedHeading = "Så arbetar SVT med tillgänglighet";
+        assertEquals(expectedHeading,actualHeading);
+        driver.navigate().to("https://www.svtplay.se/");
     }
-
     @Test
-    void printTheProgramCaptionForVeryFirstProgram() throws InterruptedException {
-       driver.findElement(By.xpath(" //a[@accesskey=\"1\"]"));
-       Thread.sleep(3000);
-       String a = driver.findElement(By.className("bpPWRL")).getText();
-       System.out.println("*************************************     "+a+ "           *************************                   ");
+    void checkTheProgramList() throws InterruptedException {
+        driver.findElement(By.xpath("//a[text()='Program']")).click();
+        sleep(3000);
+        List<WebElement> countOfAllPrograms = driver.findElements(By.className("hjlmUN"));
+        sleep(3000);
+        int countOfPrograms = countOfAllPrograms.size();
+        sleep(3000);
+        assertEquals(16,countOfPrograms,"Count does not match");
     }
 
     @Test
-    void usingSearch() throws InterruptedException {
+    void verifyTheTitleForBarnPrograms(){
+       String actualTitle = driver.findElement(By.linkText("Barn")).getText();
+       String expectedTitle = "Barn";
+       assertEquals(expectedTitle,actualTitle,"Title for Barn program does not match");
+    }
+
+    @Test
+    void usingSearchValidateTitle() throws InterruptedException {
        WebElement z = driver.findElement(By.xpath("//input[@aria-label=\"Sök på SVT Play\"]"));
+       String value= z.getAttribute("value");
+        if(value!=null){
+            int va = value.length();
+            for(int i=0; i<va;i++){
+                z.sendKeys(Keys.BACK_SPACE);
+            }
+        }
        z.sendKeys("Agenda");
-       // driver.findElement(By.className("sc-8961da81-16")).click();
-       Thread.sleep(3000);
+       sleep(3000);
        String b = driver.findElement(By.linkText("Agenda")).getText();
-       Assertions.assertEquals("Agenda",b);
+       assertEquals("Agenda",b,"Title does not match");
        z.clear();
-
     }
     @Test
-    void sendThePistvaktInSearchBarAndCountThePrograms() throws InterruptedException {
+    void sendThePistvaktInSearchBarAndVerifyTheTitle() throws InterruptedException {
        WebElement y = driver.findElement(By.xpath("//input[@aria-label=\"Sök på SVT Play\"]"));
         String value = y.getAttribute("value");
         if(value!=null){
@@ -118,33 +114,51 @@ public class SeleniumCiCdPush {
         }
         y.sendKeys("Pistvakt");
         y.sendKeys(Keys.ENTER);
-       // driver.findElement(By.className("sc-8961da81-16")).click();
-        Thread.sleep(2000);
+        sleep(2000);
         driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/section/div/ul/li/article/a")).click();
-                //driver.findElement(By.className("sc-8ddc32bb-9")).click();
-        Thread.sleep(2000);
-        int countOfSeries2 = driver.findElements(By.className("sc-b6440fda-0")).size();
-        System.out.println("THe Count of programs in  Series2 is :"+countOfSeries2+"      *************************************              ");
-      String d= driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/section/div/article[5]/div/a")).getAttribute("aria-label");
-       System.out.println("THe name of fiftht program is: "+d+"        *****************************             ");
+        sleep(2000);
+        String actualNameOfTheProgram = driver.findElement(By.xpath("//*[@id=\"play_main-content\"]/div/div[1]/div[2]/div/h1")).getText();
+        assertEquals("Pistvakt",actualNameOfTheProgram,"Title does not match");
+
     }
-    @Test
-    void gotoJobSearch() throws InterruptedException {
-       //driver.findElement(By.linkText("Kanaler")).click();
-        Thread.sleep(2000);
+   @Test
+    void verifyTheJobSearchPageURL() throws InterruptedException {
+        sleep(2000);
         driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/footer/div/div[3]/a[2]/span[2]")).click();
         driver.findElement(By.linkText("Om oss")).click();
-        Thread.sleep(2000);
+        sleep(2000);
         driver.findElement(By.xpath("//*[@id=\"topmenu\"]/ul/li[5]/a")).click();
-        driver.findElement(By.partialLinkText("Lediga")).click();
-    }
+        WebElement a = driver.findElement(By.partialLinkText("Lediga"));
+        a.click();
+       String actualURL = driver.getCurrentUrl();
+       String expectedURL = "https://omoss.svt.se/jobba-har/alla-lediga-tjanster.html";
+       assertEquals(expectedURL,actualURL,"URL does not match");
+       driver.navigate().to("https://www.svtplay.se/");
+   }
     @Test
     void countTheDifferentSortsOfPrograms(){
        List<WebElement> we= driver.findElements(By.className("sc-a3880b6b-3"));
-       int c= we.size();
-       System.out.println("The count of different sorts of programs: "+c);
+       int actualCount = we.size();
+       assertEquals(17,actualCount,"Count is not same");
     }
-   /*@AfterAll
+    @Test
+    void verifyTHeNyheterKategorieTitle() throws InterruptedException {
+        driver.findElement(By.xpath("//a[text()='Program']")).click();
+        sleep(3000);
+        driver.findElement(By.cssSelector("#play_main-content > div > section:nth-child(1) > section > article:nth-child(2) > a > h2 > span")).click();
+        sleep(3000);
+        String actualTitle = driver.getTitle();
+        String expectedTitle = "Nyheter | SVT Play";
+        assertEquals(expectedTitle,actualTitle,"Title does not match");
+    }
+    @Test
+    void verifyInställningarURL(){
+       driver.findElement(By.xpath("//*[@id=\"__next\"]/div/div[3]/div/footer/div/div[3]/a[1]/span[2]")).click();
+       String actualURL = driver.getCurrentUrl();
+       String expectedURL = "https://www.svtplay.se/installningar";
+       assertEquals(expectedURL,actualURL,"URL does not match");
+    }
+  /* @AfterAll
     static void Shutingdown(){
        driver.close();
     }*/
